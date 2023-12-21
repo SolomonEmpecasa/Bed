@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+{% block title %}Sign Up{% endblock %}
+{% block content %}
+  <div class="signup-container">
+    <div class="form-container">
+      <form method="POST" class="form-box" enctype="multipart/form-data">
+        <h3 align="center" class="signup">Sign Up</h3>
+
+        <div class="form-columns">
+          <div class="form-column">
+            <div class="form-group">
+              <label for="email">Email Address</label>
+              <input type="email" class="form-control" id="email" name="email" placeholder="Enter email">
+            </div>
+
+            <div class="form-group">
+              <label for="phone">Phone Number</label>
+              <input type="tel" class="form-control" id="phone" name="phone" placeholder="Enter phone number">
+            </div>
+
+            <div class="form-group">
+              <label for="citizenship">Citizenship</label>
+              <input type="text" class="form-control" id="citizenship" name="citizenship" placeholder="Enter citizenship">
+            </div>
+
+            <div class="form-group">
+              <label for="first_name">Name</label>
+              <input type="text" id="first_name" name="first_name" class="form-control" placeholder="Enter your name" required>
+            </div>
+          </div>
+
+          <div class="form-column">
+            <div class="form-group">
+              <label for="password1">Password</label>
+              <input type="password" class="form-control" id="password1" name="password1" placeholder="Enter password">
+            </div>
+
+            <div class="form-group">
+              <label for="password2">Password (Confirm)</label>
+              <input type="password" class="form-control" id="password2" name="password2" placeholder="Confirm password">
+            </div>
+
+            <div class="form-group">
+              <label for="photo">Upload Photo</label>
+              <div class="custom-file">
+                <input type="file" class="custom-file-input" id="photo" name="photo" accept="image/*">
+                <label class="custom-file-label" for="photo">Choose file</label>
+              </div>
+            </div>    
+
+        <br />
+        <button type="submit" class="btn btn-primary">Submit</button>
+      </form>
+    </div>
+  </div>
+{% endblock %}

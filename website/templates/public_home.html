@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+{% block title %}Home{% endblock %}
+{% block content %}
+<div class="title-container">
+  <div class="home-title">
+    <span style="color: Orange;">Welcome to <span style="color: white;">Bed & Breakfast</span> 
+    <span class="tilted-text">Nepal</span></span>
+  </div>
+  <img class="nepal-flag" src="{{ url_for('static', filename='images/nepal.gif') }}" width="100" height="100" style="margin-left: 15px;">
+</div>
+<div class="picture-options-container">
+
+  <div class="picture-options-container">
+    <div class="picture-option">
+      <a href="{{ url_for('auth.view_houses') }}">
+        <div class="picture-option">
+          <img src="{{ url_for('static', filename='images/room.jpg') }}" alt="Rooms">
+          <p>Rooms</p>
+        </div>
+      </a>
+    </div>
+  
+    <div class="picture-option">
+      <a href="{{ url_for('auth.write_blog') }}">
+        <img src="{{ url_for('static', filename='images/window.jpg') }}" alt=" ">
+        <p>Blogs</p>
+    </a>
+    </div>
+  
+    <div class="picture-option">
+      <a href="{{ url_for('auth.view_events') }}">
+        <img src="{{ url_for('static', filename='images/events.jpg') }}" alt="Events">
+        <p>Events</p>
+      </a>
+    </div>
+  </div>
+  
+</div>
+{% endblock %}

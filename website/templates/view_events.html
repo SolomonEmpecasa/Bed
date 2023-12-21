@@ -1,0 +1,21 @@
+
+{% extends "base.html" %}
+{% block title %}View Events{% endblock %}
+{% block content %}
+  <div class="content-container">
+    <body class="no-footer">
+    <h2>View Events</h2>
+    {% for event in events %}
+      <div class="event-entry">
+        <h3>{{ event.title }}</h3>
+        <img src="{{ event.image }}" alt="Event Image" class="event-image">
+
+        <p><strong>Description:</strong> {{ event.description }}</p>
+        <p><strong>Location:</strong> {{ event.location }}</p>
+        <p><strong>Date:</strong> {{ event.date.strftime('%Y-%m-%d') }}</p>
+        <p><strong>Price:</strong> {{ event.price }}</p>
+        <!-- Add other event details as needed -->
+      </div>
+    {% endfor %}
+  </div>
+{% endblock %}

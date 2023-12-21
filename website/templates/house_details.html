@@ -1,0 +1,91 @@
+{% extends "base.html" %}
+{% block title %}House Details{% endblock %}
+{% block content %}
+  <div class="viewpage-container">
+    <body class="no-footer">
+    <h2>House Details</h2>
+    {% if house %}
+      <div class="house-item">
+        <div class="house-details">
+          <h2 style="color: black;">House Name: {{ house.house_name }}</h2>
+
+          <!-- First Column: Owner, Phone, Price, Menu -->
+          <div class="column">
+            <p>Owner: {{ house.owner }}</p>
+            <p>Phone: {{ house.phone }}</p>
+            <p>Price: {{ house.price }}</p>
+            <p>Menu: {{ house.menu }}</p>
+          </div>
+
+          <!-- Second Column: Photos, Location -->
+          <div class="column">
+            <!-- Display multiple photos with lightbox -->
+            <div class="house-photos">
+              {% for photo in house.photos %}
+                <a href="{{ url_for('static', filename='images/' + photo.filename) }}" data-lightbox="house-{{ house.id }}">
+                  <img src="{{ url_for('static', filename='images/' + photo.filename) }}" alt="House Photo" class="thumbnail">
+                </a>
+              {% endfor %}
+            </div>
+          </div>
+
+          <!-- Additional Details: Street, Description -->
+          <div class="additional-details">
+            <p>Street: {{ house.street }}</p>
+            {% if house.description %}
+              <p>Description: {{ house.description }}</p>
+            {% else %}
+              <p>No description available</p>
+            {% endif %}
+
+            <!-- Delete Button -->
+            {% if house.user_id == current_user.id %}
+              <form method="POST" action="{{ url_for('auth.delete_house', house_id=house.id) }}">
+                <button type="submit">Delete</button>
+              </form>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+    {% else %}
+      <p class="no-houses">House not found.</p>
+    {% endif %}
+  </div>
+    
+  <section id="feedback-section">
+    <h2 class="feedback-title">Feedback</h2>
+    {% for blog in house.blogs %}
+      <div class="feedback-entry">
+        <div class="user-info">
+          <img src="{{ url_for('static', filename='images/user-icon.png') }}" alt="User Icon" class="user-icon">
+          <p class="username">{{ blog.user.username }}</p>
+        </div>
+        <div class="blog-content">
+          <p class="blog-text">{{ blog.blog_text }}</p>
+          <p class="rating">Rating: {{ blog.star_rating }}/5</p>
+          {% if current_user.is_authenticated and blog.user_id == current_user.id %}
+            <form method="post" action="{{ url_for('auth.delete_blog', blog_id=blog.id) }}">
+              <button type="submit" class="delete-button">Delete</button>
+            </form>
+          {% endif %}
+        </div>
+      </div>
+    {% endfor %}
+  </section>
+
+  <section id="submit-feedback-section">
+    <h2 class="submit-feedback-title">Submit Feedback</h2>
+    <form method="post" action="{{ url_for('auth.write_blog') }}">
+      <input type="hidden" name="house_id" value="{{ house.id }}">
+      <label for="blog_text">Your Feedback:</label>
+      <textarea name="blog_text" required></textarea>
+
+      <label for="star_rating">Star Rating:</label>
+      <input type="number" name="star_rating" min="1" max="5" required>
+
+      <button type="submit">Submit Feedback</button>
+    </form>
+  </section>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/lightbox2/2.11.3/js/lightbox.min.js"></script>
+{% endblock %}

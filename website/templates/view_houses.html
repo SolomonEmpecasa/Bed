@@ -1,0 +1,77 @@
+{% extends "base.html" %}
+{% block title %}View Houses{% endblock %}
+{% block content %}
+
+
+  <body class="no-footer">
+    <div class="viewpage-container">
+      <h2>Available Houses</h2>
+         <form method="post">
+        <div class="search-bar">
+          <input type="text" name="search_query" placeholder="Search by house name, location, street, or description" value="{{ search_query }}">
+          <button type="submit">Search</button>
+        </div>
+      </form>
+
+      <!-- Location Filter Dropdown -->
+      <form method="get">
+        <div class="filter-dropdown">
+          <label for="location">Filter by Location:</label>
+          <select id="location" name="location">
+            <option value="" {% if not location_filter %}selected{% endif %}>All Locations</option>
+            {% for location in distinct_locations %}
+              <option value="{{ location }}" {% if location == location_filter %}selected{% endif %}>{{ location }}</option>
+            {% endfor %}
+          </select>
+          <button type="submit">Apply Filter</button>
+        </div>
+      </form>
+
+      {% if houses %}
+        <div class="row">
+          {% for house in houses %}
+            <div class="col-md-6">
+              <div class="house-item">
+                <div class="house-details">
+                  <h2 style="color: black;"> <a href="{{ url_for('auth.house_details', house_id=house.id) }}">{{ house.house_name }}</a></h2>
+
+                  <!-- First Column: Owner, Location -->
+                 
+
+                  <!-- Second Column: Photos -->
+                  <div class="column">
+                    <!-- Display multiple photos with lightbox -->
+                    <div class="house-photos">
+                      {% for photo in house.photos %}
+                        <a href="{{ url_for('static', filename='images/' + photo.filename) }}" data-lightbox="house-{{ house.id }}">
+                          <img src="{{ url_for('static', filename='images/' + photo.filename) }}" alt="House Photo" class="thumbnail">
+                        </a>
+                      {% endfor %}
+                    </div>
+                  </div>
+
+                  <div class="column">
+                    {% if house.owner.photo %}
+                      <img src="{{ url_for('static', filename='profile_pics/' + house.owner.photo) }}" alt="Owner Photo" class="owner-photo">
+                    {% else %}
+                      
+                    {% endif %}
+                    <p>Location: {% if house.location %}{{ house.location }}{% else %}Not specified{% endif %} || Street: {{ house.street }}</p>
+                  </div>
+
+                  <!-- Additional Details: Street and Description -->
+                  <div class="additional-details">
+                    <!-- You can add more details here if needed -->
+                  </div>
+                </div>
+              </div>
+            </div>
+          {% endfor %}
+        </div>
+      {% else %}
+        <p class="no-houses">No available houses.</p>
+      {% endif %}
+    </div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/lightbox2/2.11.3/js/lightbox.min.js"></script>
+  </body>
+{% endblock %}

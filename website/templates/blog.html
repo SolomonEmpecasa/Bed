@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+{% block title %}Blogs{% endblock %}
+{% block content %}
+  <div class="blog-container">
+    <div class="write-blog">
+      <h2>Write a Blog</h2>
+      <form method="post" action="{{ url_for('auth.write_blog') }}">
+        <label for="house_image">House Image URL:</label>
+        <input type="text" name="house_image" required>
+
+        <label for="blog_text">Blog Text:</label>
+        <textarea name="blog_text" required></textarea>
+
+        <label for="star_rating">Star Rating:</label>
+        <input type="number" name="star_rating" min="1" max="5" required>
+
+        <button type="submit">Submit Blog</button>
+      </form>
+    </div>
+
+    <hr>
+
+    <div class="recent-blogs">
+      <h2>Recent Blogs</h2>
+      {% for blog in blogs %}
+        <div class="blog-entry">
+          <img src="{{ blog.house_image }}" alt="House Image">
+          <p>{{ blog.blog_text }}</p>
+          <p>Rating: {{ blog.star_rating }}/5</p>
+          {% if current_user.is_authenticated and blog.user_id == current_user.id %}
+            <form method="post" action="{{ url_for('auth.delete_blog', blog_id=blog.id) }}">
+              <button type="submit" class="delete-button">Delete</button>
+            </form>
+          {% endif %}
+        </div>
+      {% endfor %}
+    </div>
+  </div>
+{% endblock %}

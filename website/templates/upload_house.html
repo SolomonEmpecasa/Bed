@@ -1,0 +1,124 @@
+{% extends "base.html" %}
+{% block title %}Upload House{% endblock %}
+{% block content %}
+    <form method="POST" enctype="multipart/form-data" >
+        {{ form.hidden_tag() }}
+        <body class="upload-house-page">
+            <h2 class="form-heading">Upload House</h2>
+            {% with messages = get_flashed_messages() %}
+            {% if messages %}
+            <div class="alert alert-danger">
+                {% for message in messages %}
+                {{ message }}
+                {% endfor %}
+            </div>
+            {% endif %}
+            {% endwith %}
+
+            <div class="row">
+              <!-- First Column -->
+              <div class="col-md-6">
+                <div class="form-group">
+                    {{ form.house_name.label(class="form-label") }}
+                    {{ form.house_name(class="form-control") }}
+                </div>
+
+                  <div class="form-group">
+                      {{ form.phone.label(class="form-label") }}
+                      {{ form.phone(class="form-control") }}
+                  </div>
+                  <div class="form-group">
+                      {{ form.price.label(class="form-label") }}
+                      {{ form.price(class="form-control") }}
+                  </div>
+                  
+              </div>
+        
+        <div class="col-md-6">
+      <div class="form-group">
+        {{ form.photos.label(class="form-label") }}
+        {{ form.photos(class="form-control", multiple="multiple") }}
+        
+      </div>
+      <div class="form-group">
+        {{ form.location.label(class="form-label") }}
+        <select class="form-control" name="location" id="locationDropdown">
+          <option value="" selected disabled>Select a city</option>
+          <option value="Kathmandu">Kathmandu</option>
+          <option value="Pokhara">Pokhara</option>
+          <option value="Lalitpur">Lalitpur</option>
+          <option value="Biratnagar">Biratnagar</option>
+          <option value="Birganj">Birganj</option>
+          <option value="Dharan">Dharan</option>
+          <option value="Bharatpur">Bharatpur</option>
+          <option value="Bhim Dutta">Bhim Dutta</option>
+          <option value="Butwal">Butwal</option>
+          <option value="Hetauda">Hetauda</option>
+          <option value="Bhaktapur">Bhaktapur</option>
+          <option value="Janakpur">Janakpur</option>
+          <option value="Dhangadhi">Dhangadhi</option>
+          <option value="Itahari">Itahari</option>
+          <option value="Triyuga">Triyuga</option>
+          <option value="Siddharthanagar">Siddharthanagar</option>
+          <option value="Nepalganj">Nepalganj</option>
+          <option value="Madhyapur Thimi">Madhyapur Thimi</option>
+          <option value="Mechinagar">Mechinagar</option>
+          <option value="Ghorahi">Ghorahi</option>
+          <option value="Lekhnath">Lekhnath</option>
+          <option value="Kirtipur">Kirtipur</option>
+          <option value="Birendranagar">Birendranagar</option>
+          <option value="Gulariya">Gulariya</option>
+          <option value="Tikapur">Tikapur</option>
+          <option value="Ratnanagar">Ratnanagar</option>
+          <option value="Tulsipur">Tulsipur</option>
+          <option value="Kalaiya">Kalaiya</option>
+          <option value="Kamalamai">Kamalamai</option>
+          <option value="Damak">Damak</option>
+          <option value="Gorkha">Gorkha</option>
+          <option value="Rajbiraj">Rajbiraj</option>
+          <option value="Kapilvastu">Kapilvastu</option>
+          <option value="Byas">Byas</option>
+          <option value="Lahan">Lahan</option>
+          <option value="Putalibazar">Putalibazar</option>
+          <option value="Panauti">Panauti</option>
+          <option value="Gaur">Gaur</option>
+          <option value="Dipayal-Silgadhi">Dipayal-Silgadhi</option>
+          <option value="Inaruwa">Inaruwa</option>
+          <option value="Siraha">Siraha</option>
+          <option value="Ramgram">Ramgram</option>
+          <option value="Jaleswar">Jaleswar</option>
+          <option value="Baglung">Baglung</option>
+          <option value="Tansen">Tansen</option>
+          <option value="Khandbari">Khandbari</option>
+          <option value="Bhimeshwar">Bhimeshwar</option>
+          <option value="Dhankuta">Dhankuta</option>
+          <option value="Bidur">Bidur</option>
+          <option value="Waling">Waling</option>
+          <option value="Narayan">Narayan</option>
+          <option value="Malangwa">Malangwa</option>
+          <option value="Bhadrapur">Bhadrapur</option>
+          <option value="Amaragadhi">Amaragadhi</option>
+          <option value="Dasharathchand">Dasharathchand</option>
+          <option value="Ilam">Ilam</option>
+          <option value="Banepa">Banepa</option>
+          <option value="Dhulikhel">Dhulikhel</option>
+          <!-- Add more cities as needed -->
+        </select>
+      </div>
+      <div class="form-group">
+        {{ form.street.label(class="form-label") }}
+        {{ form.street(class="form-control") }}
+    </div>
+      <div class="form-group">
+        {{ form.description.label(class="form-label") }}
+        {{ form.description(class="form-control") }}
+    </div>
+</div>
+</div>
+
+
+<button type="submit" class="btn btn-primary" >Upload House</button>
+</body>
+</form>
+</div>
+{% endblock %}
