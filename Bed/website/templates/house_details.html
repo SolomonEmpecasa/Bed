@@ -53,28 +53,22 @@
   </div>
     
   <section id="feedback-section">
-    <h2 class="feedback-title">Feedback</h2>
+    <h2>Feedback</h2>
     {% for blog in house.blogs %}
       <div class="feedback-entry">
-        <div class="user-info">
-          <img src="{{ url_for('static', filename='images/user-icon.png') }}" alt="User Icon" class="user-icon">
-          <p class="username">{{ blog.user.username }}</p>
-        </div>
-        <div class="blog-content">
-          <p class="blog-text">{{ blog.blog_text }}</p>
-          <p class="rating">Rating: {{ blog.star_rating }}/5</p>
-          {% if current_user.is_authenticated and blog.user_id == current_user.id %}
-            <form method="post" action="{{ url_for('auth.delete_blog', blog_id=blog.id) }}">
-              <button type="submit" class="delete-button">Delete</button>
-            </form>
-          {% endif %}
-        </div>
+        <p>{{ blog.blog_text }}</p>
+        <p>Rating: {{ blog.star_rating }}/5</p>
+        {% if current_user.is_authenticated and blog.user_id == current_user.id %}
+          <form method="post" action="{{ url_for('auth.delete_blog', blog_id=blog.id) }}">
+            <button type="submit" class="delete-button">Delete</button>
+          </form>
+        {% endif %}
       </div>
     {% endfor %}
   </section>
 
   <section id="submit-feedback-section">
-    <h2 class="submit-feedback-title">Submit Feedback</h2>
+    <h2>Submit Feedback</h2>
     <form method="post" action="{{ url_for('auth.write_blog') }}">
       <input type="hidden" name="house_id" value="{{ house.id }}">
       <label for="blog_text">Your Feedback:</label>

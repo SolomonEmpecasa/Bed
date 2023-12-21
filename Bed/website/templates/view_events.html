@@ -1,0 +1,23 @@
+<!-- view_events.html -->
+
+{% extends "base.html" %}
+{% block title %}View Events{% endblock %}
+{% block content %}
+    <h2>View Events</h2>
+    {% for event in events %}
+        <div class="event-item">
+            <h3>{{ event.title }}</h3>
+            <p>{{ event.description }}</p>
+            <p>Location: {{ event.location }}</p>
+            <p>Date: {{ event.date.strftime('%Y-%m-%d') }}</p>
+            <p>Price: {{ event.price }}</p>
+            {% if event.images %}
+                <div class="event-photos">
+                    {% for image in event.images.split(',') %}
+                        <img src="{{ url_for('static', filename='images/' + image) }}" alt="Event Photo" class="thumbnail">
+                    {% endfor %}
+                </div>
+            {% endif %}
+        </div>
+    {% endfor %}
+{% endblock %}

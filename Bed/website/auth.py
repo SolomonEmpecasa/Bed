@@ -132,6 +132,12 @@ def delete_account():
         return redirect(url_for('auth.account'))
 
 
+
+
+from flask import render_template
+
+# ... (other imports)
+
 @auth.route('/view_houses', methods=['GET', 'POST'])
 def view_houses():
     search_query = request.form.get('search_query', '')
@@ -159,6 +165,9 @@ def view_houses():
         houses = House.query.all()
 
     return render_template('view_houses.html', houses=houses, distinct_locations=distinct_locations)
+
+
+
 
 
 @auth.route('/upload_house', methods=['GET', 'POST'])
@@ -237,7 +246,6 @@ def write_blog():
         house_image = request.form.get('house_image')
         blog_text = request.form.get('blog_text')
         star_rating = request.form.get('star_rating')
-        house_url = request.args.get('house_url', '')
 
         new_blog = Blog(
             house_image=house_image,
@@ -245,8 +253,6 @@ def write_blog():
             star_rating=star_rating,
             user_id=current_user.id
         )
-        
-        new_blog.house_url = house_url
 
         db.session.add(new_blog)
         db.session.commit()
@@ -254,15 +260,12 @@ def write_blog():
         flash('Blog submitted successfully!', category='success')
         return redirect(url_for('auth.blog'))
 
-    blogs = Blog.query.all()
-    return render_template('blog.html', blogs=blogs)
-
+    return render_template('blog.html')  # Create a new HTML file for write-blog
 
 @auth.route('/blog')
 def blog():
     blogs = Blog.query.all()
     return render_template('blog.html', blogs=blogs)
-
 
 @auth.route('/delete-blog/<int:blog_id>', methods=['POST'])
 @login_required
@@ -276,42 +279,34 @@ def delete_blog(blog_id):
         flash('Failed to delete blog. Unauthorized or not found.', category='error')
     return redirect(url_for('auth.blog'))
 
-
-@auth.route('/view_events')
-@login_required
-def view_events():
-    events = Event.query.all()
-    return render_template('view_events.html', events=events)
-
 def save_image(image):
     if image:
         filename = secure_filename(image.filename)
-        filepath = os.path.join(UPLOAD_FOLDER, filename)
-        image.save(filepath)
-        return filepath
+        photo_path = os.path.join('website', 'static', 'images', filename)
+        image.save(photo_path)
+        return filename
     return None
-
 
 @auth.route('/upload_event', methods=['GET', 'POST'])
 @login_required
 def upload_event():
+    houses = House.query.all()
+    locations = [house.location for house in houses]
+
     if request.method == 'POST':
         title = request.form.get('title')
         description = request.form.get('description')
         location = request.form.get('location')
         date_str = request.form.get('date')
         price = request.form.get('price')
-        house_id = request.form.get('house_id')
         images = request.files.getlist('images')
+        image_paths = [save_image(image) for image in images]  # You need to implement save_image function
 
         try:
             date_obj = datetime.strptime(date_str, '%Y-%m-%d')
         except ValueError:
             flash('Invalid date format', 'error')
             return redirect(url_for('auth.upload_event'))
-
-        image_paths = [save_image(image) for image in images]
-        image_paths = [path for path in image_paths if path]  # Filter out None values
 
         new_event = Event(
             title=title,
@@ -321,7 +316,6 @@ def upload_event():
             price=price,
             images=image_paths,
             user_id=current_user.id,
-            house_id=house_id,
             created_at=datetime.utcnow()
         )
 
@@ -331,5 +325,10 @@ def upload_event():
         flash('Event added successfully!', 'success')
         return redirect(url_for('auth.upload_event'))
 
-    houses = House.query.all()
-    return render_template('upload_event.html', houses=houses)
+    return render_template('upload_event.html', locations=locations)
+
+@auth.route('/view_events')
+@login_required
+def view_events():
+    events = Event.query.all()
+    return render_template('view_events.html', events=events)

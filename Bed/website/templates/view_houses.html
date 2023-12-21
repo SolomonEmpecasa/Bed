@@ -71,7 +71,11 @@
       {% else %}
         <p class="no-houses">No available houses.</p>
       {% endif %}
+
+      <a href="{{ url_for('auth.upload_house') }}" class="upload-link">Upload House</a>
     </div>
+
+    <!-- Include lightbox script -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/lightbox2/2.11.3/js/lightbox.min.js"></script>
   </body>
 {% endblock %}

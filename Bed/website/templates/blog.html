@@ -2,6 +2,7 @@
 {% block title %}Blogs{% endblock %}
 {% block content %}
   <div class="blog-container">
+    <body class="no-footer">
     <div class="write-blog">
       <h2>Write a Blog</h2>
       <form method="post" action="{{ url_for('auth.write_blog') }}">
