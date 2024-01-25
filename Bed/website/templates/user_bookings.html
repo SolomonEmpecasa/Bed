@@ -1,26 +1,60 @@
 {% extends "base.html" %}
-
 {% block title %}Your Bookings{% endblock %}
-
 {% block content %}
-  <div class="user-bookings-container">
-    <h2>Your Bookings</h2>
+<body class="no-footer">
+<div class="user-bookings-container">
+  <h2>Your Bookings</h2>
 
-    {% if bookings %}
-      <ul class="booking-list">
-        {% for booking in bookings %}
-          <li class="booking">
-            <p>Booking ID: {{ booking.id }}</p>
-            <p>House: {{ booking.house.house_name }}</p>
-            <p>Location: {{ booking.house.location }}</p>
-            <p>Check-in: {{ booking.check_in_date }}</p>
-            <p>Check-out: {{ booking.check_out_date }}</p>
-            <p>Total Amount: Rs{{ booking.total_amount }}</p>
-          </li>
-        {% endfor %}
-      </ul>
-    {% else %}
-      <p class="no-bookings">No bookings yet.</p>
-    {% endif %}
-  </div>
+  {% if bookings %}
+    {% for booking in bookings %}
+      <div class="booking-ticket">
+        <div class="user-profile">
+          <br>
+          <img src="{{ url_for('static', filename='images/' + user.photo) }}" alt="Profile Picture">
+          <br><br>
+          <p>{{ user.first_name }} {{ user.last_name }}</p>
+          <p>Email: {{ user.email }}</p>
+          <p>Phone: {{ user.phone }}</p>
+          <!-- Add other user details as needed -->
+        </div>
+
+        <br><br>
+        <div class="house-details">
+          <h2>{{ booking.house.house_name }}</h2>
+          <p>Location: {{ booking.house.location }}</p>
+          <p>Owner: {{ booking.house.owner }}</p>
+          <p>Phone: {{ booking.house.phone }}</p>
+          <p>Price: NPR {{ booking.house.price }} per night</p>
+          <p>Description: {{ booking.house.description }}</p>
+          <!-- Add other house details as needed -->
+        </div>
+        <br><br>
+        <div class="booking-info">
+          <h3>Booking Information</h3>
+          <p>Check-in Date: {{ booking.check_in_date }}</p>
+          <p>Check-out Date: {{ booking.check_out_date }}</p>
+          <p>Total Amount: NPR {{ booking.total_amount }}</p>
+          <!-- Add other booking details as needed -->
+          
+          <!-- Cancel Booking button -->
+          
+        </div>
+        <br><br>
+        <div class="welcome-message">
+          <p>Welcome to your booking at {{ booking.house.house_name }}!</p>
+          <!-- Add other welcome messages or instructions as needed -->
+        </div>
+      </div>
+
+      <div class="cancel-booking">
+        <form method="post" action="{{ url_for('auth.cancel_booking', booking_id=booking.id) }}">
+            <button type="submit" class="cancel-button">Cancel Booking</button>
+        </form>
+    </div>
+      
+    {% endfor %}
+  {% else %}
+    <p class="no-bookings" style="color: white;">No bookings yet.</p>
+  {% endif %}
+</div>
 {% endblock %}

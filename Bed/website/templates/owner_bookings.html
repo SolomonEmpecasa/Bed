@@ -1,40 +1,43 @@
 {% extends "base.html" %}
-
-{% block title %}Owner Bookings{% endblock %}
-
+{% block title %}Owner's Bookings{% endblock %}
 {% block content %}
-  <div class="owner-bookings-container">
-    <h2>Your Booked Houses</h2>
 
-    {% if booked_houses %}
-      <ul class="booked-houses-list">
+<div class="container mt-4 owner">
+  <h2>Your Bookings</h2>
+
+  {% if booked_houses %}
+    <table class="table">
+      <thead>
+        <tr>
+          <th>House Name</th>
+          <th>User Name</th>
+          <th>User Phone</th>
+          <th>Check-in Date</th>
+          <th>Check-out Date</th>
+          <th>Total Amount</th>
+        </tr>
+      </thead>
+      <tbody>
         {% for house in booked_houses %}
-          <li class="booked-house">
-            <p class="house-info">House: {{ house.house_name }}</p>
-            <p class="house-info">Location: {{ house.location }}</p>
-            <p class="house-info">Total Earnings: Rs{{ total_earnings }}</p>
-
-            {% if house.bookings %}
-              <ul class="booking-list">
-                {% for booking in house.bookings %}
-                  <li class="booking">
-                    <p>Booking ID: {{ booking.id }}</p>
-                    <p>Check-in: {{ booking.check_in_date }}</p>
-                    <p>Check-out: {{ booking.check_out_date }}</p>
-                    <p>Total Amount: Rs{{ booking.total_amount }}</p>
-                  </li>
-                {% endfor %}
-              </ul>
-            {% else %}
-              <p class="no-bookings">No bookings for this house yet.</p>
-            {% endif %}
-          </li>
+          {% for booking in house.bookings %}
+            <tr>
+              <td>{{ house.house_name }}</td>
+              <td>{{ booking.user.first_name }}</td>
+              <td>{{ booking.user.phone }}</td>
+              <td>{{ booking.check_in_date.strftime('%Y-%m-%d') }}</td>
+              <td>{{ booking.check_out_date.strftime('%Y-%m-%d') }}</td>
+              <td>{{ booking.total_amount }}</td>
+            </tr>
+          {% endfor %}
         {% endfor %}
-      </ul>
+      </tbody>
+    </table>
 
-      <p class="total-earnings">Total Earnings: Rs{{ total_earnings }}</p>
-    {% else %}
-      <p class="no-houses">No booked houses yet.</p>
-    {% endif %}
-  </div>
+    <p>Total Earnings: {{ total_earnings }}</p>
+  {% else %}
+    <p>No bookings yet.</p>
+  {% endif %}
+
+</div>
+
 {% endblock %}

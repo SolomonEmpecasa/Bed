@@ -2,18 +2,16 @@
 {% block title %}View Houses{% endblock %}
 {% block content %}
 
-
   <body class="no-footer">
     <div class="viewpage-container">
       <h2>Available Houses</h2>
-         <form method="post">
+      <form method="post">
         <div class="search-bar">
           <input type="text" name="search_query" placeholder="Search by house name, location, street, or description" value="{{ search_query }}">
           <button type="submit">Search</button>
         </div>
       </form>
 
-      <!-- Location Filter Dropdown -->
       <form method="get">
         <div class="filter-dropdown">
           <label for="location">Filter by Location:</label>
@@ -73,7 +71,7 @@
         <p class="no-houses">No available houses.</p>
       {% endif %}
 
-      <a href="{{ url_for('auth.upload_house') }}" class="upload-link">Upload House</a>
+      
     </div>
 
     <!-- Include lightbox script -->

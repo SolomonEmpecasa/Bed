@@ -49,7 +49,9 @@ class House(db.Model):
 class HouseForm(FlaskForm):
     house_name = StringField('House Name', validators=[DataRequired()])
     location = StringField('Location', validators=[DataRequired(), Length(max=100)])
-    phone = StringField('Phone', validators=[DataRequired(), Length(max=20)])
+    phone = StringField('Phone', validators=[
+        DataRequired(message='Phone number is required.'),
+        Length(min=10, max=10, message='Phone number must be 10 digits.')])
     price = IntegerField('Price', validators=[DataRequired()])
     menu = TextAreaField('Menu', validators=[Length(max=500)])
     description = TextAreaField('Description', validators=[Length(max=1000)])
@@ -58,7 +60,8 @@ class HouseForm(FlaskForm):
     id = db.Column(db.Integer, primary_key=True)
     house_id = db.Column(db.Integer, db.ForeignKey('house.id'), nullable=False)
     filename = db.Column(db.String(255), nullable=False)    
-
+    
+    
 class HousePhoto(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     filename = db.Column(db.String(255))
@@ -82,6 +85,10 @@ class Blog(db.Model):
 
     def __repr__(self):
         return f"Blog('{self.title}', '{self.content}', '{self.rating}', '{self.date}')"
+    
+class BlogForm(FlaskForm):
+    blog_text = TextAreaField('Blog Text', validators=[DataRequired(), Length(max=1000)])
+    star_rating = IntegerField('Star Rating', validators=[DataRequired(), NumberRange(min=1, max=5)])    
 
 class Booking(db.Model):
     id = db.Column(db.Integer, primary_key=True)

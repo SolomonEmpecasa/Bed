@@ -42,8 +42,6 @@
               {% else %}
                 <p>No description available</p>
               {% endif %}
-
-              <h3>Booking Options</h3>
               {% if current_user.is_authenticated %}
                 <a href="{{ url_for('auth.book_house', house_id=house.id) }}" class="btn btn-primary">Book Now</a>
               {% else %}
@@ -70,7 +68,7 @@
     <section id="submit-feedback-section">
       <h2>Submit Feedback</h2>
       <div class="feedback-entry">
-        <div class="profile-column">
+        
       <form method="post" action="{{ url_for('auth.write_feedback', house_id=house.id) }}">
         <div class="details-column">
         <label for="blog_text">Your Feedback:</label>
@@ -100,10 +98,10 @@
           <p>{{ blog.blog_text }}</p>
           <p>Rating: {{ blog.star_rating }}/5</p>
           {% if current_user.is_authenticated and blog.user_id == current_user.id %}
-            <form method="post" action="{{ url_for('auth.delete_blog', blog_id=blog.id) }}">
-              <button type="submit" class="delete-button">Delete</button>
-            </form>
-          {% endif %}
+          <form method="post" action="{{ url_for('auth.delete_feedback', blog_id=blog.id, house_id=house.id) }}">
+            <button type="submit" class="delete-button">Delete</button>
+          </form>
+        {% endif %}
         </div>
       </div>
     {% endfor %}

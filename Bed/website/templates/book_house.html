@@ -1,15 +1,51 @@
 {% extends "base.html" %}
 {% block title %}Book House{% endblock %}
 {% block content %}
-  <h2>Book House</h2>
-  <p>You are booking: {{ house.house_name }}</p>
-  <form method="post">
-    <label for="check_in_date">Check-in Date:</label>
-    <input type="date" name="check_in_date" required>
+  <div class="container">
+    <h2 class="page-title">Book House</h2>
+    
 
-    <label for="check_out_date">Check-out Date:</label>
-    <input type="date" name="check_out_date" required>
+    <form method="post" action="{{ url_for('auth.book_house', house_id=house.id) }}" onsubmit="return calculateTotal()">
+      <div class="booking-form">
+        <div class="form-group">
+          <p><h3>You are booking: {{ house.house_name }}</h3></p>
+          <label for="check_in_date">Check-in Date:</label>
+          <input type="date" name="check_in_date" id="check_in_date" required>
+        </div>
 
-    <button type="submit">Book Now</button>
-  </form>
+        <div class="form-group">
+          <label for="check_out_date">Check-out Date:</label>
+          <input type="date" name="check_out_date" id="check_out_date" required onchange="calculateTotal()">
+        </div>
+
+        <div class="form-group">
+          <label>Total Amount:</label>
+          <span id="total_amount_display">Rs0.00</span>
+        </div>
+
+        <button type="submit" class="btn-book-now">Book Now</button>
+      </div>
+    </form>
+  </div>
+
+  <script>
+    function calculateTotal() {
+      // Fetch the selected dates
+      var checkInDate = new Date(document.getElementById("check_in_date").value);
+      var checkOutDate = new Date(document.getElementById("check_out_date").value);
+
+      // Calculate the number of nights
+      var numNights = (checkOutDate - checkInDate) / (1000 * 60 * 60 * 24);
+
+      // Assuming a fixed price per night, you can modify this based on your pricing logic
+      var pricePerNight = parseFloat("{{ house.price|replace('Rs', '')|replace(' ', '') }}");
+
+      // Calculate the total price
+      var totalPrice = numNights * pricePerNight;
+
+      // Display the total price
+      var totalAmountDisplay = document.getElementById("total_amount_display");
+      totalAmountDisplay.innerHTML = "Rs" + totalPrice.toFixed(2);
+    }
+  </script>
 {% endblock %}

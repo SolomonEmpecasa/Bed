@@ -1,7 +1,7 @@
 from flask import Blueprint, render_template, redirect, url_for, flash, request  # Make sure you import the User model
 from werkzeug.security import generate_password_hash, check_password_hash
 from werkzeug.utils import secure_filename
-from .models import User, House, HouseForm, HousePhoto, Blog, Booking
+from .models import User, House, HouseForm, HousePhoto, Blog, BlogForm, Booking
 from sqlalchemy import or_
 from sqlalchemy.orm import joinedload
 from datetime import datetime
@@ -141,7 +141,7 @@ def account():
         'first_name': current_user.first_name,
         'phone': current_user.phone,
         'citizenship': current_user.citizenship,
-         'photo': url_for('static', filename=f'images/{current_user.photo}') if current_user.photo else None, # Assuming you stored the photo path in the database
+        'photo': url_for('static', filename=f'images/{current_user.photo}') if current_user.photo else None, # Assuming you stored the photo path in the database
     }
     return render_template('account.html', user=user_data)
 
@@ -303,6 +303,21 @@ def write_feedback(house_id):
 
     return redirect(url_for('auth.house_details', house_id=house_id))
 
+@auth.route('/delete_feedback/<int:blog_id>/<int:house_id>', methods=['POST'])
+@login_required
+def delete_feedback(blog_id, house_id):
+    # Assuming you have a Blog model and a House model
+    blog = Blog.query.get_or_404(blog_id)
+    
+    # Check if the current user is the author of the feedback
+    if current_user.id == blog.user_id:
+        # Logic to delete the feedback
+        db.session.delete(blog)
+        db.session.commit()
+
+    # Redirect to the house details page or wherever appropriate
+    return redirect(url_for('auth.house_details', house_id=house_id))
+
 @auth.route('/write-blog', methods=['GET', 'POST'])
 @login_required
 def write_blog():
@@ -357,8 +372,9 @@ def save_image(image):
 @login_required
 def user_bookings():
     user = current_user 
-    bookings = user.bookings
-    return render_template('user_bookings.html', bookings=bookings)
+    bookings = current_user.bookings
+    return render_template('user_bookings.html', user=user, bookings=bookings)
+
 
 @auth.route('/owner_bookings')
 @login_required
@@ -422,3 +438,15 @@ def book_house(house_id):
             flash('Invalid date format. Please use YYYY-MM-DD.', category='error')
 
     return render_template('book_house.html', house=house)
+
+@auth.route('/cancel_booking/<int:booking_id>', methods=['POST'])
+@login_required
+def cancel_booking(booking_id):
+    booking = Booking.query.get(booking_id)
+    if booking and booking.user_id == current_user.id:
+        db.session.delete(booking)
+        db.session.commit()
+        flash('Booking canceled successfully!', category='success')
+    else:
+        flash('Failed to cancel booking. Unauthorized or not found.', category='error')
+    return redirect(url_for('auth.user_bookings'))
