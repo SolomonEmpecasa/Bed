@@ -1,8 +1,9 @@
 from flask import Blueprint, render_template, redirect, url_for, flash, request  # Make sure you import the User model
 from werkzeug.security import generate_password_hash, check_password_hash
 from werkzeug.utils import secure_filename
-from .models import User, House, HouseForm, HousePhoto, Blog, Event
+from .models import User, House, HouseForm, HousePhoto, Blog, Booking
 from sqlalchemy import or_
+from sqlalchemy.orm import joinedload
 from datetime import datetime
 from . import db 
 from flask_login import login_user, login_required, logout_user, current_user
@@ -18,6 +19,38 @@ ALLOWED_EXTENSIONS = {'jpg', 'jpeg', 'png', 'gif'}
 
 def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+
+def calculate_average_rating(feedback_blogs):
+    total_ratings = 0
+    total_blogs = 0
+
+    for blog in feedback_blogs:
+        total_ratings += blog.star_rating
+        total_blogs += 1
+
+    if total_blogs > 0:
+        average_rating = round(total_ratings / total_blogs, 2)
+        return average_rating
+    else:
+        return 0.0
+    
+def calculate_total_amount(check_in_date, check_out_date, price):
+    # Convert price to a string if it's not already
+    price_str = str(price)
+    
+    # Ensure that price_str has the 'Rs' prefix
+    if not price_str.startswith('Rs'):
+        price_str = f'Rs{price_str}'
+
+    # Convert the prefixed price to a float
+    price_per_night = float(price_str.replace('Rs', '').strip())
+
+    # Calculate the total amount
+    num_nights = (check_out_date - check_in_date).days
+    total_amount = num_nights * price_per_night
+
+    return total_amount
+
 
 @auth.route('/')
 def default():
@@ -163,6 +196,9 @@ def view_houses():
         houses = House.query.filter_by(location=location_filter).all()
     else:
         houses = House.query.all()
+        
+    for house in houses:
+        house.average_rating = calculate_average_rating(house.blogs)    
 
     return render_template('view_houses.html', houses=houses, distinct_locations=distinct_locations)
 
@@ -237,7 +273,35 @@ def delete_house(house_id):
 @login_required
 def house_details(house_id):
     house = House.query.get(house_id)
-    return render_template('house_details.html', house=house)
+    average_rating = calculate_average_rating(house.blogs)
+
+    return render_template('house_details.html', house=house, average_rating=average_rating)
+
+
+
+@auth.route('/write-feedback/<int:house_id>', methods=['GET', 'POST'])
+@login_required
+def write_feedback(house_id):
+    house = House.query.get(house_id)
+
+    if request.method == 'POST':
+        blog_text = request.form.get('blog_text')
+        star_rating = request.form.get('star_rating')
+
+        new_blog = Blog(
+            blog_text=blog_text,
+            star_rating=star_rating,
+            user_id=current_user.id,
+            house_id=house_id,
+            
+        )
+
+        db.session.add(new_blog)
+        db.session.commit()
+
+        flash('Feedback submitted successfully!', category='success')
+
+    return redirect(url_for('auth.house_details', house_id=house_id))
 
 @auth.route('/write-blog', methods=['GET', 'POST'])
 @login_required
@@ -251,6 +315,7 @@ def write_blog():
             house_image=house_image,
             blog_text=blog_text,
             star_rating=star_rating,
+            author_name=current_user.first_name,
             user_id=current_user.id
         )
 
@@ -287,48 +352,73 @@ def save_image(image):
         return filename
     return None
 
-@auth.route('/upload_event', methods=['GET', 'POST'])
+
+@auth.route('/user_bookings')
 @login_required
-def upload_event():
-    houses = House.query.all()
-    locations = [house.location for house in houses]
+def user_bookings():
+    user = current_user 
+    bookings = user.bookings
+    return render_template('user_bookings.html', bookings=bookings)
+
+@auth.route('/owner_bookings')
+@login_required
+def owner_bookings():
+    owner = current_user  # Assuming you're using Flask-Login
+
+    # Query booked houses and related bookings
+    booked_houses = (
+        House.query
+        .options(joinedload(House.bookings))
+        .filter_by(user_id=owner.id)
+        .all()
+    )
+
+    total_earnings = sum(booking.total_amount for house in booked_houses for booking in house.bookings)
+
+    return render_template('owner_bookings.html', booked_houses=booked_houses, total_earnings=total_earnings)
+
+from flask import render_template, redirect, url_for, flash
+from .models import Booking
+from . import db
+from flask_login import login_required, current_user
+from datetime import datetime
+
+# Your other imports...
+
+@auth.route('/book_house/<int:house_id>', methods=['GET', 'POST'])
+@login_required
+def book_house(house_id):
+    house = House.query.get(house_id)
 
     if request.method == 'POST':
-        title = request.form.get('title')
-        description = request.form.get('description')
-        location = request.form.get('location')
-        date_str = request.form.get('date')
-        price = request.form.get('price')
-        images = request.files.getlist('images')
-        image_paths = [save_image(image) for image in images]  # You need to implement save_image function
+        check_in_date_str = request.form.get('check_in_date')
+        check_out_date_str = request.form.get('check_out_date')
 
         try:
-            date_obj = datetime.strptime(date_str, '%Y-%m-%d')
+            # Convert the date strings to datetime objects
+            check_in_date = datetime.strptime(check_in_date_str, '%Y-%m-%d')
+            check_out_date = datetime.strptime(check_out_date_str, '%Y-%m-%d')
+
+            # Calculate total amount based on your business logic
+            total_amount = calculate_total_amount(check_in_date, check_out_date, house.price)
+
+            # Create a new Booking instance
+            new_booking = Booking(
+                check_in_date=check_in_date,
+                check_out_date=check_out_date,
+                total_amount=total_amount,
+                user_id=current_user.id,
+                house_id=house.id
+            )
+
+            # Add and commit the new booking to the database
+            db.session.add(new_booking)
+            db.session.commit()
+
+            flash('Booking successful!', category='success')
+            return redirect(url_for('auth.user_bookings'))
+
         except ValueError:
-            flash('Invalid date format', 'error')
-            return redirect(url_for('auth.upload_event'))
+            flash('Invalid date format. Please use YYYY-MM-DD.', category='error')
 
-        new_event = Event(
-            title=title,
-            description=description,
-            location=location,
-            date=date_obj,
-            price=price,
-            images=image_paths,
-            user_id=current_user.id,
-            created_at=datetime.utcnow()
-        )
-
-        db.session.add(new_event)
-        db.session.commit()
-
-        flash('Event added successfully!', 'success')
-        return redirect(url_for('auth.upload_event'))
-
-    return render_template('upload_event.html', locations=locations)
-
-@auth.route('/view_events')
-@login_required
-def view_events():
-    events = Event.query.all()
-    return render_template('view_events.html', events=events)
+    return render_template('book_house.html', house=house)

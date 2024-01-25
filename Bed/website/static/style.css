@@ -114,7 +114,7 @@ h1, h2 {
 }
 
 .navbar {
-  background-color: rgba(32, 23, 23, 0.8); /* Adjust the alpha value as needed */
+  background-color: rgba(230, 31, 31, 0.8); /* Adjust the alpha value as needed */
   border-bottom: 2px solid #fff;
 }
 
@@ -240,51 +240,39 @@ h1, h2 {
 .user-photo {
   max-width: 250px;
   margin-left:50px;
-  height: 230px;
+  height: 250px;
   border-radius: 60%;
-  border: 2px solid rgb(24, 141, 161); /* Add a white border around the circular image */
+  border: 2px solid rgb(255, 255, 255); /* Add a white border around the circular image */
 }
 
 /* Add this to your existing CSS or create a new stylesheet */
 
 .viewpage-container {
-  margin: 20px;
+  margin: 10px;
 }
 
 
 
 .house-item {
-  border-radius:10px;
-  background-color: rgba(240, 231, 231, 0.6);
-  padding: 5px;
+  border-radius: 15px;
+  background-color: rgba(226, 203, 203, 0.9);
+  font-size: 25px;
+  padding: 15px;
   margin-bottom: 20px;
-  transition: box-shadow 0.3s ease;
-}
-
-.house-item:hover {
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-}
-
-
-
-
-.thumbnail {
-  max-width: 100%;
-  height: auto;
-  border: 1px solid #ddd;
-  border-radius: 5px;
-  cursor: pointer;
-  transition: transform 0.3s ease;
+ 
 }
 
 .thumbnail:hover {
   transform: scale(1.1);
 }
 
-.owner-photo img {
-  max-width: 100%;
-  border-radius: 50%;
-  margin-bottom: 10px;
+
+.profile-pic {
+  max-width: 100px;
+  height: 100px;
+  border-radius: 60%;
+  border: 2px solid rgb(255, 255, 255); /* Optional: Add a white border around the circular image */
 }
 
 .no-houses {
@@ -308,9 +296,6 @@ h1, h2 {
   background-color: #2980b9;
 }
 
-
-
-
 .home-page .footer,
 .login-page .footer,
 .signup-page .footer {
@@ -327,10 +312,38 @@ h1, h2 {
   display: none;
 }
 
-.house-details{
-  color:black;
+
+
+/* Add this to your CSS file or style section */
+#feedback-section {
+  padding: 10px;
 }
 
+.feedback-entry {
+  background-color: rgb(192, 190, 190);
+  border: 1px solid #ccc; /* Add a border for separation */
+  margin-bottom: 15px; /* Add space between each feedback entry */
+  padding: 15px; /* Add padding for better visual separation */
+  display: flex;
+  border-radius: 10px;
+}
+
+.profile-column {
+  margin-right: 25px; /* Add some spacing between the columns */
+  
+}
+
+
+
+.feedback-entry img.profile-pic {
+  border-radius: 50%;
+  width: 100px; /* Adjust the size as needed */
+  height: 100px; /* Adjust the size as needed */
+}
+
+.details-column {
+  flex-grow: 1; /* Allow the details column to grow and take available space */
+}
 
 #get-location-btn {
   margin-top: 10px; /* Adjust as needed */
@@ -339,12 +352,50 @@ h1, h2 {
 .thumbnail-container {
   position: relative;
   display: inline-block;
-  margin: 5px;
+  margin: 4px;
 }
 
 .thumbnail {
   width: 100%; /* Adjust the width as needed */
   height: 250px; /* Adjust the height as needed */
+  cursor: pointer;
+  transition: transform 0.3s ease;
+}
+
+.search-bar {
+  margin-bottom: 20px;
+}
+
+.search-bar input[type="text"] {
+  padding: 10px;
+  width: 70%;
+}
+
+.search-bar button {
+  padding: 10px;
+  background-color: #007bff; /* Primary blue color */
+  color: #fff; /* White text color */
+  cursor: pointer;
+}
+
+
+
+.filter-dropdown {
+  margin-bottom: 20px;
+}
+
+.filter-dropdown label {
+  margin-right: 10px;
+}
+
+.filter-dropdown select {
+  padding: 10px;
+}
+
+.filter-dropdown button {
+  padding: 10px;
+  background-color: #28a745; /* Success green color */
+  color: #fff; /* White text color */
   cursor: pointer;
 }
 
@@ -474,41 +525,6 @@ h1, h2 {
   background-color: #d32f2f;
 }
 
-.search-bar {
-  margin-bottom: 20px;
-}
-
-.search-bar input[type="text"] {
-  padding: 10px;
-  width: 70%;
-}
-
-.search-bar button {
-  padding: 10px;
-  background-color: #007bff; /* Primary blue color */
-  color: #fff; /* White text color */
-  cursor: pointer;
-}
-
-.filter-dropdown {
-  margin-bottom: 20px;
-}
-
-.filter-dropdown label {
-  margin-right: 10px;
-}
-
-.filter-dropdown select {
-  padding: 10px;
-}
-
-.filter-dropdown button {
-  padding: 10px;
-  background-color: #28a745; /* Success green color */
-  color: #fff; /* White text color */
-  cursor: pointer;
-}
-
 .upload-event-container {
   max-width: 800px;
   margin: auto;
@@ -558,65 +574,4 @@ h1, h2 {
 
 .upload-event-container button:hover {
   background-color: #45a049;
-}
-
-.feedback-container {
-  margin: 20px;
-}
-
-.feedback-form {
-  max-width: 600px;
-  margin: 0 auto;
-}
-
-.feedback-form label {
-  display: block;
-  margin-bottom: 10px;
-  font-weight: bold;
-}
-
-.feedback-form textarea {
-  width: 100%;
-  padding: 10px;
-  margin-bottom: 20px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-}
-
-.feedback-form button {
-  background-color: #4CAF50;
-  color: white;
-  padding: 10px 15px;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-}
-
-.feedback-form button:hover {
-  background-color: #45a049;
-}
-
-.feedback-list {
-  list-style-type: none;
-  padding: 0;
-}
-
-.feedback-item {
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  margin-bottom: 15px;
-  padding: 10px;
-}
-
-.feedback-item img {
-  max-width: 100%;
-  border-radius: 4px;
-}
-
-.feedback-item p {
-  margin: 10px 0;
-}
-
-.feedback-item small {
-  color: #888;
 }

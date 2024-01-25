@@ -19,8 +19,8 @@ class User(db.Model, UserMixin):
     citizenship = db.Column(db.String(50))
     photo = db.Column(db.String(150))
     blogs = db.relationship('Blog', back_populates='author')
-    events = db.relationship('Event', back_populates='user')
     houses = db.relationship('House', back_populates='user')
+    bookings = db.relationship('Booking', back_populates='user')
 
     def __repr__(self):
         return f"User('{self.email}', '{self.first_name}')"
@@ -33,13 +33,14 @@ class House(db.Model):
     price = db.Column(db.String(20), nullable=False)
     menu = db.Column(db.Text)
     street = db.Column(db.String(255), nullable=False)
-    location = db.Column(db.String(255), nullable=False)  # Add this line for the location attribute
+    location = db.Column(db.String(255), nullable=False) 
+    average_rating = db.Column(db.Float, default=5.0)# Add this line for the location attribute
     description = db.Column(db.Text)
     photos = db.relationship('HousePhoto', back_populates='house')
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
     user = db.relationship('User', back_populates='houses')
     blogs = db.relationship('Blog', back_populates='house')
-    events = db.relationship('Event', back_populates='house')
+    bookings = db.relationship('Booking', back_populates='house')
 
     def __repr__(self):
         return f"House('{self.location}', '{self.owner}', '{self.price}', '{self.description}')"
@@ -75,27 +76,19 @@ class Blog(db.Model):
     date = db.Column(db.DateTime(timezone=True), default=func.now())
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
     author = db.relationship('User', back_populates='blogs')
+    author_name = db.Column(db.String(100), nullable=False)
     house_id = db.Column(db.Integer, db.ForeignKey('house.id'))
     house = db.relationship('House', back_populates='blogs')
 
     def __repr__(self):
         return f"Blog('{self.title}', '{self.content}', '{self.rating}', '{self.date}')"
 
-class Event(db.Model):
+class Booking(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    title = db.Column(db.String(100), nullable=False)
-    description = db.Column(db.Text, nullable=False)
-    location = db.Column(db.String(255), nullable=False)
-    date = db.Column(db.DateTime, nullable=False)
-    price = db.Column(db.String(20), nullable=False)
-    images = db.relationship('EventPhoto', back_populates='event')  # Change back_populates to 'event'
+    check_in_date = db.Column(db.Date, nullable=False)
+    check_out_date = db.Column(db.Date, nullable=False)
+    total_amount = db.Column(db.Float, nullable=False)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+    user = db.relationship('User', back_populates='bookings')
     house_id = db.Column(db.Integer, db.ForeignKey('house.id'))
-    user = db.relationship('User', back_populates='events')
-    house = db.relationship('House', back_populates='events')
-
-class EventPhoto(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    filename = db.Column(db.String(255))
-    event_id = db.Column(db.Integer, db.ForeignKey('event.id'))
-    event = db.relationship('Event', back_populates='images') 
+    house = db.relationship('House', back_populates='bookings')

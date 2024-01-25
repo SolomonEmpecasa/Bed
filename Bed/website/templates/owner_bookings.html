@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+
+{% block title %}Owner Bookings{% endblock %}
+
+{% block content %}
+  <div class="owner-bookings-container">
+    <h2>Your Booked Houses</h2>
+
+    {% if booked_houses %}
+      <ul class="booked-houses-list">
+        {% for house in booked_houses %}
+          <li class="booked-house">
+            <p class="house-info">House: {{ house.house_name }}</p>
+            <p class="house-info">Location: {{ house.location }}</p>
+            <p class="house-info">Total Earnings: Rs{{ total_earnings }}</p>
+
+            {% if house.bookings %}
+              <ul class="booking-list">
+                {% for booking in house.bookings %}
+                  <li class="booking">
+                    <p>Booking ID: {{ booking.id }}</p>
+                    <p>Check-in: {{ booking.check_in_date }}</p>
+                    <p>Check-out: {{ booking.check_out_date }}</p>
+                    <p>Total Amount: Rs{{ booking.total_amount }}</p>
+                  </li>
+                {% endfor %}
+              </ul>
+            {% else %}
+              <p class="no-bookings">No bookings for this house yet.</p>
+            {% endif %}
+          </li>
+        {% endfor %}
+      </ul>
+
+      <p class="total-earnings">Total Earnings: Rs{{ total_earnings }}</p>
+    {% else %}
+      <p class="no-houses">No booked houses yet.</p>
+    {% endif %}
+  </div>
+{% endblock %}

@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% block title %}Book House{% endblock %}
+{% block content %}
+  <h2>Book House</h2>
+  <p>You are booking: {{ house.house_name }}</p>
+  <form method="post">
+    <label for="check_in_date">Check-in Date:</label>
+    <input type="date" name="check_in_date" required>
+
+    <label for="check_out_date">Check-out Date:</label>
+    <input type="date" name="check_out_date" required>
+
+    <button type="submit">Book Now</button>
+  </form>
+{% endblock %}

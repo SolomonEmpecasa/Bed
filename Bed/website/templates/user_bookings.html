@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+
+{% block title %}Your Bookings{% endblock %}
+
+{% block content %}
+  <div class="user-bookings-container">
+    <h2>Your Bookings</h2>
+
+    {% if bookings %}
+      <ul class="booking-list">
+        {% for booking in bookings %}
+          <li class="booking">
+            <p>Booking ID: {{ booking.id }}</p>
+            <p>House: {{ booking.house.house_name }}</p>
+            <p>Location: {{ booking.house.location }}</p>
+            <p>Check-in: {{ booking.check_in_date }}</p>
+            <p>Check-out: {{ booking.check_out_date }}</p>
+            <p>Total Amount: Rs{{ booking.total_amount }}</p>
+          </li>
+        {% endfor %}
+      </ul>
+    {% else %}
+      <p class="no-bookings">No bookings yet.</p>
+    {% endif %}
+  </div>
+{% endblock %}
